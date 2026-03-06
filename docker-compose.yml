@@ -1,0 +1,31 @@
+services:
+  db:
+    container_name: pg4
+    image: postgres:15-alpine
+    ports:
+      - "6461:6461"
+    env_file:
+      - ./.env
+    environment:
+      POSTGRES_PASSWORD: ${DBP}
+      POSTGRES_USER: ${DBU}
+      POSTGRES_DB: ${BD}
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DBU} -d ${BD}"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+  api:
+    container_name: pi
+    ports:
+      - "9999:9999"
+    build: 
+      context: ./api
+      dockerfile: Dockerfile
+    depends_on:
+      - db    
+volumes:
+  pg_data:
+    driver: local
