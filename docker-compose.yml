@@ -1,0 +1,42 @@
+services:
+  db:
+    container_name: pg4
+    image: postgres:15-alpine
+    ports:
+      - "7890:5432"
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${DB}
+      POSTGRES_USER: ${USR}
+      POSTGRES_PASSWORD: ${PASS}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${USR} -d ${DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 2s
+    networks:
+      - postgres_network
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+  web:
+    container_name: pi
+    env_file:
+      - ./.env
+    ports:
+      - "8080:8080"
+    build: 
+      context: ./api
+      dockerfile: Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy    
+    networks:
+      postgres_network:
+volumes:
+  pg_data:
+    driver: local
+
+networks:
+  postgres_network:
