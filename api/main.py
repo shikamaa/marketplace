@@ -35,6 +35,7 @@ def idx():
 
 @app.get("/products", response_model = list[ProductSchema])
 async def get_pag_products(session: SessionDep, 
+                        #pagination: pagination = Depends(PagListing) worst way
                         pagination: PagDep) -> list[ProductSchema]:
     query = (
         select(Product).
@@ -68,6 +69,7 @@ async def return_similar_products(session: SessionDep):
 
 @app.post("/products", description="Creates a product")
 async def add_product(input_data: AddProductSchema,session: SessionDep):
+    # if len(name) > 100 -> 500ERR
     new_product = Product(
         name = input_data.name,
         description = input_data.description,
@@ -87,7 +89,14 @@ async def create_order(session: SessionDep, ):
 async def create_order():
     pass
 
-
+#WIP
+# async def insert_some_data():
+#     async with async_ssn() as ssn:
+#         ssn.add(Product("iPhone SE3 (2022)", 1000, 50))
+#         ssn.add(Product("iPhone 17e (2026)", 1600, 110))
+#         await ssn.commit()
+#         print("Sucessfully committed!")
 
 if __name__ == "__main__":
     uvicorn.run(app)
+    # async_run(insert_some_data())
