@@ -5,6 +5,7 @@ from sqlalchemy import Numeric
 class AddProductSchema(BaseModel):
     name: str = Field(default=None)
     description: str = Field(default=None)
+    #description: Optional[str] = None 
     status: bool = Field(default=True)
        
 class ProductSchema(AddProductSchema):
