@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, ConfigDict
-from typing import Optional
+from typing import Optional, Annotated
 from sqlalchemy import Numeric
 
 class AddProductSchema(BaseModel):
@@ -23,3 +23,14 @@ class PagParams(BaseModel):
     limit: int = Field(default=100, ge=0, le=100, description="records displayed on the page")
     offset: int = Field(default=0, ge=0, le=100, description="max offset of records")
 
+class AddUserSchema():
+    username: str = Field()
+    password: str
+    
+class UserSchema():
+    id: Optional[int] 
+    
+    
+    
+    
+    
