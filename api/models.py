@@ -33,3 +33,12 @@ class OrderProduct(Base):
     price: Mapped[float] = mapped_column(
         Numeric(10,2)
     )
+    
+class User(Base):
+    __tablename__ = 'users'
+    id: Mapped[int] = mapped_column(autoincrement=True, primary_key=True)
+    username: Mapped[str] = mapped_column(String(30), unique=True, nullable=False)
+    password: Mapped[str] = mapped_column(String(200), nullable=False)
+
+    
+    
