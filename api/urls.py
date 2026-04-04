@@ -37,10 +37,17 @@ async def get_pag_products(session: SessionDep,
     )
     res = (await session.execute(query)).scalars().all()
     if res is None:
-         raise HTTPException(status_code=404,description="Product not found")
+         raise HTTPException(status_code=404,description="Products not found")
     
     return res
- 
+
+
+@router.get("/products/search", response_model=list[ProductSchema]) 
+async def get_like_products(session: SessionDep, product: str) -> list[ProductSchema]:
+    desired = f"%{product}%" 
+    q = select(Product).where(Product.name.ilike(desired))
+    return (await session.execute(q)).scalars().all()
+    
 @router.get("/products/{id}", response_model=ProductSchema, description="Returns a product if it exists")
 async def get_specific_product(session: SessionDep, id: int):
     query = select(Product).where(Product.id == id)
@@ -48,20 +55,11 @@ async def get_specific_product(session: SessionDep, id: int):
     res = (await session.execute(query)).scalar_one_or_none()
     
     if res is None:
-        raise HTTPException(status_code=404, detail="Product not found")
+        raise HTTPException(status_code=404, detail=f"Product {id} not found")
 
     return res
 
-# @app.get("/products/search?q=/{str}", response_model=list[ProductSchema]) 
-# async def ilike_products(session: SessionDep, product: str) -> list[ProductSchema]:
-#     desired_products = f"%{product}%"
-#     query = select(Product).where((Product.name.ilike(desired_products)))
-#     res = (await session.execute(query)).scalars().all()
-#     if res is None:
-#         raise HTTPException(status_code=404, detail="No match found")
-#     return res
-    
-@router.get("/products/{id}/similar")
+
 async def return_similar_products(session: SessionDep):
     pass
 
